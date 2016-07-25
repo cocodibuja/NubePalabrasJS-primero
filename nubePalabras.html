@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Contar caracteres y palabras</title>
+    
+    <style type="text/css">
+        #micanvas{
+            background-color: antiquewhite;
+        }
+    </style>
+
+</head>
+
+<body>    
+       <h2> Contar palabras </h2>
+        <form ID="formulario" ACTION="#">
+        <textarea ID="area" COLS=20 ROWS=10>
+        Texto dentro del área de texto .Lero) .. .Lero{ texto adentro</textarea><BR>
+        <INPUT TYPE="button" VALUE="Contar las palabras" onClick="wordCount();">
+        
+         
+        </form>
+        
+          <canvas id="miCanvas" width="450" height="550">Su navegador no soporta Canvas.</canvas>
+    
+        <script type="text/javascript">
+
+    
+
+
+
+        var numeroPalabras;
+        function wordCount() {
+          // Función que nos va a contar el número de caracteres 
+          // y de palabras del area de texto de un formulario
+
+          // Obtenemos el texto del area.
+          textoArea = document.getElementById("area").value;
+
+          // El numero de caracteres es su longitud
+          numeroCaracteres = textoArea.length;
+
+          // Eliminamos los caracteres en blanco del inicio y del final.
+          // Como no tenemos funciones del tipo trim, rtrim y ltrim usamos
+          // expresiones regulares
+          // El ^ indica principio de cadena
+          inicioBlanco = /^ /
+          // El $ indica final de cadena
+          finBlanco = / $/
+          // El global (g) es para obtener todas las posibles combinaciones
+          variosBlancos = /[ ]/gi 
+          punto=/[.]/gi // es global
+          
+          parentsisInicial=/[(]/gi // es global
+          parentsisFinal=/[)]/gi // es global
+          
+          llaveInicial=/[{]/gi // es global
+          llaveFinal=/[}]/gi // es global
+          
+          comillas=/["]/gi
+          
+          //todo a minuscula
+         
+          
+          textoArea = textoArea.replace(llaveInicial," ");
+          textoArea = textoArea.replace( llaveFinal," ");
+            
+          textoArea = textoArea.replace(parentsisInicial," ");
+          textoArea = textoArea.replace( parentsisFinal," ");
+            
+        
+         textoArea = textoArea.replace( comillas," ");
+        
+           textoArea = textoArea.replace(punto," ");
+          textoArea = textoArea.replace(/\s\s+/g, " ");
+          textoArea = textoArea.replace(inicioBlanco,"");
+          textoArea = textoArea.replace(finBlanco,"");
+          textoArea = textoArea.replace(variosBlancos," ");
+     
+           
+
+          // Creamos un array con las diferentes palabras. Teniendo en 
+          // cuenta que la separación entre palabras es el espacio en blanco.
+          var textoAreaDividido = textoArea.split(" ");
+          var numeroPalabras = textoAreaDividido.length;
+            
+           
+            
+
+          // Mostramos los datos.
+          // Tendremos en cuenta si hay que escribir en plural o en singular.
+          tC = (numeroCaracteres==1)?" carácter":" caracteres";
+          tP = (numeroPalabras==1)?" palabra":" palabras";
+
+         // alert 
+         console.log(textoAreaDividido+" "+ " palabra 0: " +  textoAreaDividido[0] +" <--"+ numeroCaracteres + tC +"\n" + numeroPalabras + tP);
+         
+           
+            /*var textoBuscado = "Texto";
+            textoBuscado = textoBuscado.toLowerCase();
+            
+            
+            var textoMinuscula = textoArea.toLowerCase();
+            var textoFiltrado = textoMinuscula.split(" ");
+            
+            textoSplit = textoMinuscula.split(textoBuscado);
+            var cantidaddePalabra = textoSplit.length-1;
+            
+            console.log("palabra "+ textoBuscado +": " + cantidaddePalabra);
+            
+            */
+            
+            
+            // Preparamos el texto para trabajarlo
+            var textoMinuscula = textoArea.toLowerCase();
+            var textoFiltrado = textoMinuscula.split(" ");
+            
+            
+            // Clases y Lista
+              function Palabra(texto,cantidad)
+            {
+                this.texto = texto;
+                this.cantidad = cantidad;
+            }
+            
+            var ListPalabras = new Array();
+            
+        
+            //Tomar la primer palabra buscarla y anotar la cantidad de veces que se repite
+            var textoBuscado ="";
+            var cantidadDeVecesQueRepitePalabra = 0;
+            /*
+            var textoBuscado = textoFiltrado[0]+" ";
+            var textoSplit = textoMinuscula.split(textoBuscado);
+            var cantidadDeVecesQueRepitePalabra = textoSplit.length-1;
+            var palabra = new Palabra(textoBuscado,cantidadDeVecesQueRepitePalabra);
+            ListPalabras.push(palabra);
+            */
+            var distinto = 0; // para agregar al final sii no existe la palabra en toda la Lista
+
+         
+            //A partir de la segunda ya empiezo a buscar y comparar
+             for(i = 0; i < textoFiltrado.length; i++)
+            {
+                textoBuscado = textoFiltrado[i];
+              //  console.log( "Texto Buscado ["+i+"]: " + textoBuscado);
+                
+                distinto = 0;
+                 for(j = 0; j < ListPalabras.length; j++)
+                {
+                    // busco la palabra a ver si no la tengo en mi Lista
+                    if(ListPalabras[j].texto != textoBuscado)
+                    {
+                       distinto +=1  
+                    }
+                }
+                if(distinto == ListPalabras.length)
+                {
+                    
+                    //pasarlo a Funcion---------------------------
+                    cantidadDeVecesQueRepitePalabra = 0;
+                    for(m = 0; m < textoFiltrado.length; m++)
+                    {
+
+                        if(textoFiltrado[m].localeCompare(textoBuscado) == 0){
+                            cantidadDeVecesQueRepitePalabra += 1;
+                        } 
+                    }
+                    //-------------------------------------------------------
+                   
+                    palabra = new Palabra(textoBuscado,cantidadDeVecesQueRepitePalabra);
+                    ListPalabras.push(palabra);
+                        
+                }
+            }
+            
+            
+           
+            for(i = 0; i < ListPalabras.length; i++)
+            {
+                 console.log("resultado--> Palabra: "+ListPalabras[i].texto
+                             + " : "+ ListPalabras[i].cantidad);
+                
+            }
+            
+            
+             console.log( "longitud de Lista "+ ListPalabras.length);
+            
+     
+            //****************************
+            var canvas = document.getElementById('miCanvas');
+            var contexto = canvas.getContext('2d');
+           contexto.fillStyle = '#CCCCCC';
+           contexto.fillRect (0, 0, 550, 350);
+          
+          
+          
+             
+           
+            //********************************
+            
+            
+            
+            
+             for(i = 0; i < ListPalabras.length; i++)
+            {
+                    tamanio = ListPalabras[i].cantidad * 10;
+                    contexto.font = tamanio +'px Arial';
+                    contexto.fillStyle = 'DeepSkyBlue';
+                    contexto.strokeStyle = 'DarkSlateGray';
+                    posicionx = (i+2) * 50;
+                    posiciony = (i+2) * 10;
+                    contexto.fillText(ListPalabras[i].texto,posicionx,posiciony);
+                
+            }
+            
+        
+        }
+
+
+
+        //-------------------------
+
+   
+    
+        
+       
+        </script>
+</body>
+
+</html>
+
+
+
+
